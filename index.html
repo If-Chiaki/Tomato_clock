@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>番茄钟</title>
+    <!-- 允许拖动窗口 -->
+    <style>
+      body {
+        -webkit-app-region: drag;
+        background: transparent;
+      }
+      button, a, input, .no-drag {
+        -webkit-app-region: no-drag;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
