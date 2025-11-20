@@ -5,9 +5,10 @@ import { TomatoIcon } from './components/TomatoIcon';
 
 const App = () => {
   const [workDuration, setWorkDuration] = useState(25);
+  const [breakDuration, setBreakDuration] = useState(5);
   const [timeLeft, setTimeLeft] = useState(workDuration * 60);
   const [isActive, setIsActive] = useState(false);
-  const [mode, setMode] = useState('work'); // 'work' | 'shortBreak' | 'longBreak'
+  const [mode, setMode] = useState('work'); // 'work' | 'break'
   const [isTop, setIsTop] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [isCompact, setIsCompact] = useState(false);
@@ -15,15 +16,14 @@ const App = () => {
   // 配置
   const config = {
     work: workDuration * 60,
-    shortBreak: 5 * 60,
-    longBreak: 15 * 60
+    break: breakDuration * 60
   };
 
   useEffect(() => {
-    if (mode === 'work' && !isActive) {
-        setTimeLeft(workDuration * 60);
+    if (!isActive) {
+        setTimeLeft(config[mode]);
     }
-  }, [workDuration]);
+  }, [workDuration, breakDuration]);
 
   useEffect(() => {
     let interval = null;
@@ -88,11 +88,13 @@ const App = () => {
   const handleSaveSettings = (e) => {
       e.preventDefault();
       const form = e.target;
-      const newDuration = parseInt(form.duration.value, 10);
-      if (newDuration > 0) {
-          setWorkDuration(newDuration);
-          setShowSettings(false);
-      }
+      const newWorkDuration = parseInt(form.workDuration.value, 10);
+      const newBreakDuration = parseInt(form.breakDuration.value, 10);
+      
+      if (newWorkDuration > 0) setWorkDuration(newWorkDuration);
+      if (newBreakDuration > 0) setBreakDuration(newBreakDuration);
+      
+      setShowSettings(false);
   }
 
   // 进度百分比
@@ -194,11 +196,22 @@ const App = () => {
                     <div className="space-y-2">
                         <label className="block text-sm font-medium text-gray-600">专注时长 (分钟)</label>
                         <input 
-                            name="duration"
+                            name="workDuration"
                             type="number" 
                             defaultValue={workDuration}
                             min="1"
                             max="120"
+                            className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/50 bg-white"
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-600">休息时长 (分钟)</label>
+                        <input 
+                            name="breakDuration"
+                            type="number" 
+                            defaultValue={breakDuration}
+                            min="1"
+                            max="60"
                             className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/50 bg-white"
                         />
                     </div>
@@ -230,13 +243,12 @@ const App = () => {
         <div className="flex space-x-2 bg-gray-100 p-1 rounded-full no-drag">
           {[
             { id: 'work', label: '专注' },
-            { id: 'shortBreak', label: '短休' },
-            { id: 'longBreak', label: '长休' }
+            { id: 'break', label: '休息' }
           ].map((m) => (
             <button
               key={m.id}
               onClick={() => switchMode(m.id)}
-              className={`px-4 py-1 rounded-full text-sm font-medium transition-all duration-300 ${
+              className={`px-6 py-1 rounded-full text-sm font-medium transition-all duration-300 ${
                 mode === m.id 
                   ? 'bg-white text-primary shadow-sm' 
                   : 'text-gray-500 hover:text-gray-700'
