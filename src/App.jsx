@@ -33,6 +33,15 @@ const App = () => {
         setTimeLeft((prev) => prev - 1);
       }, 1000);
     } else if (timeLeft === 0 && isActive) {
+      if (isCompact) {
+          setIsCompact(false);
+          if (window.electronAPI) {
+              window.electronAPI.setSize(400, 600);
+              window.electronAPI.setAlwaysOnTop(isTop);
+              window.electronAPI.center();
+          }
+      }
+
       if (autoStart) {
           const nextMode = mode === 'work' ? 'break' : 'work';
           setMode(nextMode);
@@ -43,7 +52,7 @@ const App = () => {
       // 播放提示音或通知（待实现）
     }
     return () => clearInterval(interval);
-  }, [isActive, timeLeft, autoStart, mode, workDuration, breakDuration]);
+  }, [isActive, timeLeft, autoStart, mode, workDuration, breakDuration, isCompact, isTop]);
 
   const toggleTimer = () => setIsActive(!isActive);
   
