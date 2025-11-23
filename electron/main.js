@@ -54,6 +54,10 @@ const createWindow = () => {
   ipcMain.on('window-resize', (event, width, height) => {
     mainWindow.setSize(width, height);
   });
+
+  ipcMain.on('window-center', () => {
+    mainWindow.center();
+  });
 };
 
 app.on('ready', createWindow);

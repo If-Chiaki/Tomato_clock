@@ -88,6 +88,7 @@ const App = () => {
           } else {
               window.electronAPI.setSize(400, 600);
               window.electronAPI.setAlwaysOnTop(isTop); // Restore previous state
+              window.electronAPI.center(); // Center the window when returning to normal mode
           }
       }
   }
