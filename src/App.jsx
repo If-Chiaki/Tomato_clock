@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Pause, RotateCcw, X, Minus, Settings, Pin, PinOff, Check, Minimize2, Maximize2 } from 'lucide-react';
 import { TomatoIcon } from './components/TomatoIcon';
+import { translations, getTranslation } from './i18n/translations';
 
 const App = () => {
   const [workDuration, setWorkDuration] = useState(25);
@@ -13,6 +14,13 @@ const App = () => {
   const [isTop, setIsTop] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [isCompact, setIsCompact] = useState(false);
+  const [language, setLanguage] = useState(() => {
+    // Load language from localStorage or default to Chinese
+    return localStorage.getItem('language') || 'zh-CN';
+  });
+  
+  // Helper function to get translations
+  const t = (key) => getTranslation(language, key);
   
   // 配置
   const config = {
@@ -98,10 +106,17 @@ const App = () => {
       const newWorkDuration = parseInt(form.workDuration.value, 10);
       const newBreakDuration = parseInt(form.breakDuration.value, 10);
       const newAutoStart = form.autoStart.checked;
+      const newLanguage = form.language.value;
       
       if (newWorkDuration > 0) setWorkDuration(newWorkDuration);
       if (newBreakDuration > 0) setBreakDuration(newBreakDuration);
       setAutoStart(newAutoStart);
+      
+      // Save and apply language preference
+      if (newLanguage && newLanguage !== language) {
+          setLanguage(newLanguage);
+          localStorage.setItem('language', newLanguage);
+      }
       
       setShowSettings(false);
   }
@@ -170,10 +185,10 @@ const App = () => {
         <div className="h-8 w-full flex justify-between items-center px-3 absolute top-0 z-50">
          <div className="flex items-center space-x-2 no-drag opacity-50 hover:opacity-100 transition-opacity">
              <TomatoIcon size={18} className="text-primary" />
-             <span className="text-xs font-bold text-gray-500 tracking-wider">POMODORO</span>
+             <span className="text-xs font-bold text-gray-500 tracking-wider">{t('appName')}</span>
          </div>
          <div className="flex items-center space-x-2">
-            <button onClick={toggleCompactMode} className="p-1 hover:bg-gray-200 rounded-full transition-colors no-drag text-gray-500" title="迷你模式">
+            <button onClick={toggleCompactMode} className="p-1 hover:bg-gray-200 rounded-full transition-colors no-drag text-gray-500" title={t('miniMode')}>
                 <Minimize2 size={14} />
             </button>
             <button onClick={() => setShowSettings(!showSettings)} className="p-1 hover:bg-gray-200 rounded-full transition-colors no-drag text-gray-500">
@@ -201,9 +216,9 @@ const App = () => {
                 className="absolute inset-0 z-40 bg-white/95 backdrop-blur-sm flex items-center justify-center p-6"
             >
                 <form onSubmit={handleSaveSettings} className="w-full max-w-xs space-y-4 no-drag">
-                    <h3 className="text-lg font-bold text-gray-700 mb-4">设置</h3>
+                    <h3 className="text-lg font-bold text-gray-700 mb-4">{t('settings')}</h3>
                     <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-600">专注时长 (分钟)</label>
+                        <label className="block text-sm font-medium text-gray-600">{t('workDuration')}</label>
                         <input 
                             name="workDuration"
                             type="number" 
@@ -214,7 +229,7 @@ const App = () => {
                         />
                     </div>
                     <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-600">休息时长 (分钟)</label>
+                        <label className="block text-sm font-medium text-gray-600">{t('breakDuration')}</label>
                         <input 
                             name="breakDuration"
                             type="number" 
@@ -226,12 +241,27 @@ const App = () => {
                     </div>
                     
                     <label className="flex items-center justify-between cursor-pointer py-2">
-                        <span className="text-sm font-medium text-gray-600">连续模式</span>
+                        <span className="text-sm font-medium text-gray-600">{t('autoMode')}</span>
                         <div className="relative">
                             <input type="checkbox" name="autoStart" defaultChecked={autoStart} className="sr-only peer" />
                             <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                         </div>
                     </label>
+
+                    <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-600">{t('language')}</label>
+                        <select 
+                            name="language"
+                            defaultValue={language}
+                            className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/50 bg-white"
+                        >
+                            {Object.keys(translations).map((lang) => (
+                                <option key={lang} value={lang}>
+                                    {translations[lang].languages[lang]}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
 
                     <div className="flex space-x-3 pt-4">
                         <button 
@@ -239,14 +269,14 @@ const App = () => {
                             onClick={() => setShowSettings(false)}
                             className="flex-1 px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 font-medium transition-colors"
                         >
-                            取消
+                            {t('cancel')}
                         </button>
                         <button 
                             type="submit"
                             className="flex-1 px-4 py-2 rounded-lg bg-primary text-white hover:bg-red-500 font-medium transition-colors flex items-center justify-center space-x-2"
                         >
                             <Check size={16} />
-                            <span>保存</span>
+                            <span>{t('save')}</span>
                         </button>
                     </div>
                     <div className="text-center mt-2">
@@ -263,8 +293,8 @@ const App = () => {
         {/* 模式切换 */}
         <div className="flex space-x-2 bg-gray-100 p-1 rounded-full no-drag">
           {[
-            { id: 'work', label: '专注' },
-            { id: 'break', label: '休息' }
+            { id: 'work', label: t('work') },
+            { id: 'break', label: t('break') }
           ].map((m) => (
             <button
               key={m.id}
@@ -315,7 +345,7 @@ const App = () => {
                     {formatTime(timeLeft)}
                  </div>
                  <p className="text-gray-400 mt-2 text-sm font-medium tracking-widest uppercase">
-                    {isActive ? '进行中' : '已暂停'}
+                    {isActive ? t('inProgress') : t('paused')}
                  </p>
             </div>
         </div>
