@@ -6,6 +6,7 @@ import { TomatoIcon } from './components/TomatoIcon';
 const App = () => {
   const [workDuration, setWorkDuration] = useState(25);
   const [breakDuration, setBreakDuration] = useState(5);
+  const [autoStart, setAutoStart] = useState(false);
   const [timeLeft, setTimeLeft] = useState(workDuration * 60);
   const [isActive, setIsActive] = useState(false);
   const [mode, setMode] = useState('work'); // 'work' | 'break'
@@ -31,12 +32,18 @@ const App = () => {
       interval = setInterval(() => {
         setTimeLeft((prev) => prev - 1);
       }, 1000);
-    } else if (timeLeft === 0) {
-      setIsActive(false);
+    } else if (timeLeft === 0 && isActive) {
+      if (autoStart) {
+          const nextMode = mode === 'work' ? 'break' : 'work';
+          setMode(nextMode);
+          setTimeLeft(nextMode === 'work' ? workDuration * 60 : breakDuration * 60);
+      } else {
+          setIsActive(false);
+      }
       // 播放提示音或通知（待实现）
     }
     return () => clearInterval(interval);
-  }, [isActive, timeLeft]);
+  }, [isActive, timeLeft, autoStart, mode, workDuration, breakDuration]);
 
   const toggleTimer = () => setIsActive(!isActive);
   
@@ -90,9 +97,11 @@ const App = () => {
       const form = e.target;
       const newWorkDuration = parseInt(form.workDuration.value, 10);
       const newBreakDuration = parseInt(form.breakDuration.value, 10);
+      const newAutoStart = form.autoStart.checked;
       
       if (newWorkDuration > 0) setWorkDuration(newWorkDuration);
       if (newBreakDuration > 0) setBreakDuration(newBreakDuration);
+      setAutoStart(newAutoStart);
       
       setShowSettings(false);
   }
@@ -215,6 +224,15 @@ const App = () => {
                             className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/50 bg-white"
                         />
                     </div>
+                    
+                    <label className="flex items-center justify-between cursor-pointer py-2">
+                        <span className="text-sm font-medium text-gray-600">连续模式</span>
+                        <div className="relative">
+                            <input type="checkbox" name="autoStart" defaultChecked={autoStart} className="sr-only peer" />
+                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                        </div>
+                    </label>
+
                     <div className="flex space-x-3 pt-4">
                         <button 
                             type="button"
@@ -230,6 +248,9 @@ const App = () => {
                             <Check size={16} />
                             <span>保存</span>
                         </button>
+                    </div>
+                    <div className="text-center mt-2">
+                        <span className="text-xs text-gray-400">By Lumine</span>
                     </div>
                 </form>
             </motion.div>
