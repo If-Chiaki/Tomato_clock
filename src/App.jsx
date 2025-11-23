@@ -113,7 +113,7 @@ const App = () => {
       setAutoStart(newAutoStart);
       
       // Save and apply language preference
-      if (newLanguage && newLanguage !== language) {
+      if (newLanguage !== language) {
           setLanguage(newLanguage);
           localStorage.setItem('language', newLanguage);
       }

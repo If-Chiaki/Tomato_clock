@@ -26,7 +26,7 @@ export const translations = {
     languages: {
       'zh-CN': '简体中文',
       'en': 'English',
-      'ja': '日本语'
+      'ja': '日本語'
     }
   },
   'en': {
@@ -55,7 +55,7 @@ export const translations = {
     languages: {
       'zh-CN': '简体中文',
       'en': 'English',
-      'ja': '日本语'
+      'ja': '日本語'
     }
   },
   'ja': {
@@ -84,7 +84,7 @@ export const translations = {
     languages: {
       'zh-CN': '简体中文',
       'en': 'English',
-      'ja': '日本语'
+      'ja': '日本語'
     }
   }
 };
