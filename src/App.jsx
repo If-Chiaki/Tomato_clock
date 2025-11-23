@@ -16,7 +16,12 @@ const App = () => {
   const [isCompact, setIsCompact] = useState(false);
   const [language, setLanguage] = useState(() => {
     // Load language from localStorage or default to Chinese
-    return localStorage.getItem('language') || 'zh-CN';
+    try {
+      return localStorage.getItem('language') || 'zh-CN';
+    } catch (e) {
+      // Fallback if localStorage is not available (e.g., private browsing)
+      return 'zh-CN';
+    }
   });
   
   // Helper function to get translations
@@ -115,7 +120,12 @@ const App = () => {
       // Save and apply language preference
       if (newLanguage !== language) {
           setLanguage(newLanguage);
-          localStorage.setItem('language', newLanguage);
+          try {
+              localStorage.setItem('language', newLanguage);
+          } catch (e) {
+              // Silently fail if localStorage is not available
+              console.warn('Unable to save language preference:', e);
+          }
       }
       
       setShowSettings(false);

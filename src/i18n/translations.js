@@ -97,6 +97,10 @@ export const getTranslation = (language, key) => {
     if (value && typeof value === 'object') {
       value = value[k];
     } else {
+      // Log warning in development
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn(`Translation not found: ${language}.${key}`);
+      }
       return key; // Fallback to key if translation not found
     }
   }
