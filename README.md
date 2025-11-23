@@ -3,7 +3,7 @@
 一个基于 Electron + React + Tailwind CSS 构建的现代化、极简风格的番茄钟应用。支持迷你悬浮窗模式，让您专注于工作。
 
 ## 实机演示
-<img width="511" height="809" alt="image" src="https://github.com/user-attachments/assets/cf81c673-4e4b-4ef1-9706-d886e64e931e" />
+<img width="255" height="405" alt="image" src="https://github.com/user-attachments/assets/cf81c673-4e4b-4ef1-9706-d886e64e931e" />
 
 
 ## ✨ 功能特性
