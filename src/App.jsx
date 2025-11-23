@@ -4,6 +4,25 @@ import { Play, Pause, RotateCcw, X, Minus, Settings, Pin, PinOff, Check, Minimiz
 import { TomatoIcon } from './components/TomatoIcon';
 import { translations, getTranslation } from './i18n/translations';
 
+// Utility function for safe localStorage operations
+const safeLocalStorage = {
+  getItem: (key, defaultValue) => {
+    try {
+      return localStorage.getItem(key) || defaultValue;
+    } catch (e) {
+      console.warn('Unable to read from localStorage:', e);
+      return defaultValue;
+    }
+  },
+  setItem: (key, value) => {
+    try {
+      localStorage.setItem(key, value);
+    } catch (e) {
+      console.warn('Unable to save to localStorage:', e);
+    }
+  }
+};
+
 const App = () => {
   const [workDuration, setWorkDuration] = useState(25);
   const [breakDuration, setBreakDuration] = useState(5);
@@ -16,12 +35,7 @@ const App = () => {
   const [isCompact, setIsCompact] = useState(false);
   const [language, setLanguage] = useState(() => {
     // Load language from localStorage or default to Chinese
-    try {
-      return localStorage.getItem('language') || 'zh-CN';
-    } catch (e) {
-      // Fallback if localStorage is not available (e.g., private browsing)
-      return 'zh-CN';
-    }
+    return safeLocalStorage.getItem('language', 'zh-CN');
   });
   
   // Helper function to get translations
@@ -120,12 +134,7 @@ const App = () => {
       // Save and apply language preference
       if (newLanguage !== language) {
           setLanguage(newLanguage);
-          try {
-              localStorage.setItem('language', newLanguage);
-          } catch (e) {
-              // Silently fail if localStorage is not available
-              console.warn('Unable to save language preference:', e);
-          }
+          safeLocalStorage.setItem('language', newLanguage);
       }
       
       setShowSettings(false);
@@ -267,7 +276,7 @@ const App = () => {
                         >
                             {Object.keys(translations).map((lang) => (
                                 <option key={lang} value={lang}>
-                                    {translations[lang].languages[lang]}
+                                    {getTranslation(lang, `languages.${lang}`)}
                                 </option>
                             ))}
                         </select>

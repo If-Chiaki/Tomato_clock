@@ -94,7 +94,7 @@ export const getTranslation = (language, key) => {
   let value = translations[language];
   
   for (const k of keys) {
-    if (value && typeof value === 'object') {
+    if (value && typeof value === 'object' && k in value) {
       value = value[k];
     } else {
       // Log warning in development
