@@ -210,7 +210,7 @@ const App = () => {
                             type="number" 
                             defaultValue={workDuration}
                             min="1"
-                            max="120"
+                            max="1440"
                             className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/50 bg-white"
                         />
                     </div>
@@ -221,7 +221,7 @@ const App = () => {
                             type="number" 
                             defaultValue={breakDuration}
                             min="1"
-                            max="60"
+                            max="1440"
                             className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/50 bg-white"
                         />
                     </div>
